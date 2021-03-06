@@ -6,8 +6,8 @@
 #include <SDL2/SDL_image.h>
 #include "window.h"
 #include "player.h"
+#define FPS 75
 
-SDL_Event e;
 bool gameClose = false;
 
 SDL_Rect darea;
@@ -18,16 +18,50 @@ SDL_Rect darea_right;
 
 bool flag = false;
 
-int frameCount, timerFPS, lastFrame, fps;
+int frameCount;
+int timerFPS;
+int lastFrame;
+int fps;
 
-int angle = 90;
-// const SDL_Point new = (SDL_Point){0, 0};
-SDL_Point calculatePoint(int angle, double distance, SDL_Rect start)
-{
-    SDL_Point end;
-    end.x = start.x + SDL_cos((double)angle) * distance;
-    end.y = start.y - SDL_sin((double)angle) * distance;
-    return end;
+
+
+void reset() {
+    createPlayer();
+    createBall(&darea);
+    SDL_Delay(1000);
+}
+
+
+
+bool ballCollision(Ball *ball) {
+    if(SDL_HasIntersection(&ball->rect, &darea_top) || SDL_HasIntersection(&ball->rect, &darea_bottom)){
+        b1.speedY *= -1;
+        return true;
+    }
+    if(SDL_HasIntersection(&ball->rect, &darea_left) ){
+        printf("1 wins!\n");
+        reset();
+        return true;
+    }
+
+    if(SDL_HasIntersection(&ball->rect, &darea_right)){
+        printf("2 wins!\n");
+        reset();
+        return true;
+    }
+
+    if(SDL_HasIntersection(&ball->rect, &p1.rect)){
+        ball->speedX *= -1;
+        ball->speedY += p1.dir*0.2*p1.speed*(-1);
+        return true;
+    }
+
+    if(SDL_HasIntersection(&ball->rect, &p2.rect)){
+        ball->speedX *= -1;
+        ball->speedY += p2.dir*0.2*p2.speed*(-1);
+        return true;
+    }
+    return false;
 }
 
 bool checkCollision(SDL_Rect *currRect)
@@ -57,9 +91,8 @@ bool checkCollision(SDL_Rect *currRect)
 }
 
 
-void events()
-{
-
+void events() {
+    SDL_Event e;
     const Uint8 *keystates = SDL_GetKeyboardState(NULL);
     while (SDL_PollEvent(&e))
         if (e.type == SDL_QUIT)
@@ -69,27 +102,19 @@ void events()
         gameClose = true;
     if (keystates[SDL_SCANCODE_W])
     {
-        p1.rect.y -= p1.speed;
-        if (checkCollision(&p1.rect))
-            p1.rect.y += p1.speed;
+        paddleMoveUp(&p1);
     }
     if (keystates[SDL_SCANCODE_S])
     {
-        p1.rect.y += p1.speed;
-        if (checkCollision(&p1.rect))
-            p1.rect.y -= p1.speed;
+        paddleMoveDown(&p1);
     }
     if (keystates[SDL_SCANCODE_UP])
     {
-        p2.rect.y -= p2.speed;
-        if (checkCollision(&p2.rect))
-            p2.rect.y += p2.speed;
+        paddleMoveUp(&p2);
     }
     if (keystates[SDL_SCANCODE_DOWN])
     {
-        p2.rect.y += p2.speed;
-        if (checkCollision(&p2.rect))
-            p2.rect.y -= p2.speed;
+        paddleMoveDown(&p2);
     }
 }
 
@@ -100,17 +125,28 @@ void render()
 
     frameCount++;
     timerFPS = SDL_GetTicks() - lastFrame;
-    if (timerFPS < (1000 / 60))
+    if (timerFPS < (1000 / FPS))
     {
-        SDL_Delay((1000 / 60) - timerFPS);
+        SDL_Delay((1000 / FPS) - timerFPS);
     }
 
-    SDL_SetRenderDrawColor(rendr, 0x00, 0x00, 0x00, 255);
+    SDL_SetRenderDrawColor(rendr, 0xFF, 0xFF, 0xFF, 255);
 
     SDL_RenderCopy(rendr, p1.texture, NULL, &p1.rect);
     SDL_RenderCopyEx(rendr, p2.texture, NULL, &p2.rect, 0.0, NULL, SDL_FLIP_HORIZONTAL);
+    // SDL_RenderFillRect(rendr, &p1.rect);
+    // SDL_RenderFillRect(rendr, &p2.rect);
     SDL_RenderCopy(rendr, b1.texture, NULL, &b1.rect);
     SDL_RenderPresent(rendr);
+}
+
+
+
+void update() {
+    ballCollision(&b1);
+    b1.rect.x += b1.speedX;
+    b1.rect.y += b1.speedY;
+    // printf("%d, %d, %d, %d \n", p1.rect.x, p1.rect.y, p1.rect.w, p1.rect.h);
 }
 
 void game_loop()
@@ -127,18 +163,8 @@ void game_loop()
             frameCount = 0;
         }
         events();
+        update();
         render();
-
-        // if(checkCollision(&b1.rect)){
-        //     angle = -angle;
-
-        //     printf("angle - %f -collision!\n", angle);
-        //     b1.rect.x = x;
-        //     b1.rect.y = y;
-        // }
-        // else{
-
-        // }
     }
 }
 
@@ -148,11 +174,13 @@ int main()
 
     initialising();
 
+    srand(time(NULL));
+
     SDL_RenderGetViewport(rendr, &darea);
-    darea_left = (SDL_Rect){darea.x - 1, darea.y, 1, darea.h};
-    darea_right = (SDL_Rect){darea.w, darea.y, 1, darea.h};
-    darea_top = (SDL_Rect){darea.x, darea.y - 1, darea.w, 1};
-    darea_bottom = (SDL_Rect){darea.x, darea.h, darea.w, 1};
+    darea_left = (SDL_Rect){darea.x - 100, darea.y, 100, darea.h};
+    darea_right = (SDL_Rect){darea.w, darea.y, 100, darea.h};
+    darea_top = (SDL_Rect){darea.x, darea.y - 100, darea.w, 100};
+    darea_bottom = (SDL_Rect){darea.x, darea.h, darea.w, 100};
 
     createBall(&darea);
     createPlayer();
