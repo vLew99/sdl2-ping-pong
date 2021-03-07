@@ -1,12 +1,12 @@
 #ifndef _WINDOW_H
 #define _WINDOW_H
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#define max(a, b) ((a) < (b) ? (a) : (b))
+#define abs(a) ((a) > 0 ? (a) : (-1*a))
 
-#include <stdio.h>
-#include <SDL2/SDL.h>
-
-#define WINDOW_WIDTH 1920
-#define WINDOW_HEIGHT 1080
-#define WINDOW_FLAGS (SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_OPENGL)
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+#define WINDOW_FLAGS 0
 #define RENDERER_FLADS (SDL_REDNERER_ACCELERATED)
 
 
@@ -20,7 +20,7 @@ SDL_Rect darea_right;
 
 void initialising(){
     wind = SDL_CreateWindow(
-        "game1",
+        "Ping Pong",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         WINDOW_WIDTH, WINDOW_HEIGHT,
         WINDOW_FLAGS
@@ -33,7 +33,7 @@ void initialising(){
     
     rendr = SDL_CreateRenderer(
         wind,
-        0,
+        -1,
         SDL_RENDERER_ACCELERATED
     );
 
@@ -42,6 +42,7 @@ void initialising(){
         exit(1);
     }
 }
+
 
 void deinitialising(){
     SDL_DestroyRenderer(rendr);

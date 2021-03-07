@@ -4,85 +4,47 @@
 #include <tgmath.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <time.h>
+
 #include "window.h"
 #include "player.h"
+#include "ball.h"
+
 #define FPS 75
 
 bool gameClose = false;
-
-bool flag = false;
 
 int frameCount;
 int timerFPS;
 int lastFrame;
 int fps;
 
+// bool checkCollision(SDL_Rect *currRect)
+// {
 
+//     SDL_Rect *rectsArray[] = {
+//         &b1.rect,
+//         &darea_bottom,
+//         &darea_top,
+//         &darea_left,
+//         &darea_right,
+//         &p1.rect,
+//         &p2.rect};
 
-void reset() {
-    createPlayer();
-    createBall(&darea);
-    SDL_Delay(1000);
-}
+//     for (size_t i = 0; i < (sizeof(rectsArray) / sizeof(rectsArray[0])); ++i)
+//     {
+//         if (SDL_RectEquals(currRect, rectsArray[i]))
+//         {
+//             continue;
+//         }
+//         else if (SDL_HasIntersection(currRect, rectsArray[i]))
+//         {
+//             return true;
+//         }
+//     }
+//     return false;
+// }
 
-
-
-bool ballCollision(Ball *ball) {
-    if(SDL_HasIntersection(&ball->rect, &darea_top) || SDL_HasIntersection(&ball->rect, &darea_bottom)){
-        b1.speedY *= -1;
-        return true;
-    }
-    if(SDL_HasIntersection(&ball->rect, &darea_left) ){
-        printf("1 wins!\n");
-        reset();
-        return true;
-    }
-
-    if(SDL_HasIntersection(&ball->rect, &darea_right)){
-        printf("2 wins!\n");
-        reset();
-        return true;
-    }
-
-    if(SDL_HasIntersection(&ball->rect, &p1.rect)){
-        ball->speedX *= -1;
-        ball->speedY += p1.dir*0.2*p1.speed*(-1);
-        return true;
-    }
-
-    if(SDL_HasIntersection(&ball->rect, &p2.rect)){
-        ball->speedX *= -1;
-        ball->speedY += p2.dir*0.2*p2.speed*(-1);
-        return true;
-    }
-    return false;
-}
-
-bool checkCollision(SDL_Rect *currRect)
-{
-
-    SDL_Rect *rectsArray[] = {
-        &b1.rect,
-        &darea_bottom,
-        &darea_top,
-        &darea_left,
-        &darea_right,
-        &p1.rect,
-        &p2.rect};
-
-    for (size_t i = 0; i < (sizeof(rectsArray) / sizeof(rectsArray[0])); ++i)
-    {
-        if (SDL_RectEquals(currRect, rectsArray[i]))
-        {
-            continue;
-        }
-        else if (SDL_HasIntersection(currRect, rectsArray[i]))
-        {
-            return true;
-        }
-    }
-    return false;
-}
 
 
 void events() {
@@ -92,28 +54,34 @@ void events() {
         if (e.type == SDL_QUIT)
             gameClose = true;
 
+    p1.dir = 0;
+    p2.dir = 0;
+    
     if (keystates[SDL_SCANCODE_ESCAPE])
         gameClose = true;
     if (keystates[SDL_SCANCODE_W])
     {
+        p1.dir = -1;
         paddleMoveUp(&p1);
     }
     if (keystates[SDL_SCANCODE_S])
     {
+        p1.dir = 1;
         paddleMoveDown(&p1);
     }
     if (keystates[SDL_SCANCODE_UP])
     {
+        p2.dir = -1;
         paddleMoveUp(&p2);
     }
     if (keystates[SDL_SCANCODE_DOWN])
     {
+        p1.dir = 1;
         paddleMoveDown(&p2);
     }
 }
 
-void render()
-{
+void render() {
     SDL_SetRenderDrawColor(rendr, 0x00, 0x00, 0x00, 255);
     SDL_RenderClear(rendr);
 
@@ -125,22 +93,16 @@ void render()
     }
 
     SDL_SetRenderDrawColor(rendr, 0xFF, 0xFF, 0xFF, 255);
-
-    SDL_RenderCopy(rendr, p1.texture, NULL, &p1.rect);
-    SDL_RenderCopyEx(rendr, p2.texture, NULL, &p2.rect, 0.0, NULL, SDL_FLIP_HORIZONTAL);
-    // SDL_RenderFillRect(rendr, &p1.rect);
-    // SDL_RenderFillRect(rendr, &p2.rect);
-    SDL_RenderCopy(rendr, b1.texture, NULL, &b1.rect);
+    SDL_RenderFillRect(rendr, &p1.rect);
+    SDL_RenderFillRect(rendr, &p2.rect);
+    SDL_RenderFillRect(rendr, &b1.rect);
     SDL_RenderPresent(rendr);
 }
 
 
 
 void update() {
-    ballCollision(&b1);
-    b1.rect.x += b1.speedX;
-    b1.rect.y += b1.speedY;
-    // printf("%d, %d, %d, %d \n", p1.rect.x, p1.rect.y, p1.rect.w, p1.rect.h);
+    ballMove();
 }
 
 void game_loop()
@@ -168,7 +130,8 @@ int main()
 
     initialising();
 
-    srand(time(NULL));
+    int t = time(0);
+    srand(t);
 
     SDL_RenderGetViewport(rendr, &darea);
     darea_left = (SDL_Rect){darea.x - 100, darea.y, 100, darea.h};
@@ -181,9 +144,10 @@ int main()
 
     game_loop();
 
-    deleteTextures();
-
     deinitialising();
+
+    printf("Player 1 -> %d\n", p1.score);
+    printf("Player 2 -> %d\n", p2.score);
 
     SDL_Quit();
     return 0;
