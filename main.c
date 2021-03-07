@@ -6,6 +6,7 @@
 #include <SDL2/SDL_image.h>
 #include <time.h>
 
+#include "define.h"
 #include "window.h"
 #include "player.h"
 #include "ball.h"
@@ -18,33 +19,6 @@ int frameCount;
 int timerFPS;
 int lastFrame;
 int fps;
-
-// bool checkCollision(SDL_Rect *currRect)
-// {
-
-//     SDL_Rect *rectsArray[] = {
-//         &b1.rect,
-//         &darea_bottom,
-//         &darea_top,
-//         &darea_left,
-//         &darea_right,
-//         &p1.rect,
-//         &p2.rect};
-
-//     for (size_t i = 0; i < (sizeof(rectsArray) / sizeof(rectsArray[0])); ++i)
-//     {
-//         if (SDL_RectEquals(currRect, rectsArray[i]))
-//         {
-//             continue;
-//         }
-//         else if (SDL_HasIntersection(currRect, rectsArray[i]))
-//         {
-//             return true;
-//         }
-//     }
-//     return false;
-// }
-
 
 
 void events() {

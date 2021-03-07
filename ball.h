@@ -1,8 +1,7 @@
 #ifndef _BALL_H_INCLUDED
 #define _BALL_H_INCLUDED
 
-#define BALL_SIZE 15
-#define BALL_SPEED 1.5
+
 
 typedef struct {
     SDL_Rect rect;
@@ -38,8 +37,8 @@ void gameReset() {
 bool ballPaddleCollision(Ball *ball, Player *paddle) {
     if(!ball->prev_collision)
         ball->speedX *= -1;
-    if(abs(paddle->dir*7) > abs(paddle->dir * paddle->speed * 0.3))
-    	ball->speedY += paddle->dir * paddle->speed * 0.3;
+    if(abs(paddle->dir*7) > abs(paddle->dir * paddle->speed * 0.5))
+    	ball->speedY += paddle->dir * paddle->speed * 0.5;
    	else
    		ball->speedY += 0;
     return true;

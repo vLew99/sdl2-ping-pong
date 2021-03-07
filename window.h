@@ -1,13 +1,5 @@
 #ifndef _WINDOW_H
 #define _WINDOW_H
-#define min(a, b) ((a) < (b) ? (a) : (b))
-#define max(a, b) ((a) < (b) ? (a) : (b))
-#define abs(a) ((a) > 0 ? (a) : (-1*a))
-
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
-#define WINDOW_FLAGS 0
-#define RENDERER_FLADS (SDL_REDNERER_ACCELERATED)
 
 
 SDL_Window *wind = NULL;

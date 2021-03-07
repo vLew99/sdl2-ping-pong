@@ -1,10 +1,6 @@
 #ifndef _PLAYER_H
 #define _PLAYER_H
 
-#define PLAYER_PADDLE_WIDTH 20
-#define PLAYER_PADDLE_HEIGHT 160
-#define PLAYER_PADDLE_SPEED 30
-
 typedef struct
 {
     SDL_Rect rect;
