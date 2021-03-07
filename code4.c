@@ -10,12 +10,6 @@
 
 bool gameClose = false;
 
-SDL_Rect darea;
-SDL_Rect darea_top;
-SDL_Rect darea_bottom;
-SDL_Rect darea_left;
-SDL_Rect darea_right;
-
 bool flag = false;
 
 int frameCount;
@@ -182,7 +176,7 @@ int main()
     darea_top = (SDL_Rect){darea.x, darea.y - 100, darea.w, 100};
     darea_bottom = (SDL_Rect){darea.x, darea.h, darea.w, 100};
 
-    createBall(&darea);
+    createBall();
     createPlayer();
 
     game_loop();

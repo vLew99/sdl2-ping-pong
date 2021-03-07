@@ -1,7 +1,8 @@
 #ifndef _PLAYER_H
 #define _PLAYER_H
 
-#define BALL_SIZE 10
+#define BALL_SIZE 15
+#define BALL_SPEED 2
 #define PLAYER_PADDLE_WIDTH 20
 #define PLAYER_PADDLE_HEIGHT 160
 #define PLAYER_PADDLE_SPEED 30
@@ -53,14 +54,14 @@ void createPlayer() {
     };
 }
 
-void createBall(SDL_Rect *darea) {
+void createBall() {
     b1 = (Ball) {
-        .rect.x = darea->w/2,
-        .rect.y = darea->h/2,
+        .rect.x = darea.w/2,
+        .rect.y = darea.h/2,
         .rect.w = BALL_SIZE,
         .rect.h = BALL_SIZE,
-        .speedX = speeds[rand()%8]*1.5,
-        .speedY = speeds[rand()%8]*1.5,
+        .speedX = speeds[rand()%8]*BALL_SPEED,
+        .speedY = speeds[rand()%8]*BALL_SPEED,
         .texture = SDL_CreateTextureFromSurface(rendr, IMG_Load("assets/player.png"))
     };
 }
