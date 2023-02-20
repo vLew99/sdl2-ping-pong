@@ -1,6 +1,9 @@
 #ifndef _DEFINE_H_INCLUDED_
 #define _DEFINE_H_INCLUDED_
 
+// framerate
+#define FPS 75
+
 // window
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600

@@ -11,7 +11,7 @@
 #include "player.h"
 #include "ball.h"
 
-#define FPS 75
+
 
 bool gameClose = false;
 
@@ -30,7 +30,7 @@ void events() {
 
     p1.dir = 0;
     p2.dir = 0;
-    
+
     if (keystates[SDL_SCANCODE_ESCAPE])
         gameClose = true;
     if (keystates[SDL_SCANCODE_W])
