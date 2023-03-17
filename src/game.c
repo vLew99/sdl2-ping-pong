@@ -1,13 +1,19 @@
 #include "game.h"
 
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_surface.h>
+#include <SDL2/SDL_ttf.h>
+
+#include "score.h"
+
 extern bool gameClose;
 extern int frameCount;
 extern int timerFPS;
 extern int lastFrame;
 extern int fps;
-
 extern SDL_Window* wind;
 extern SDL_Renderer* rendr;
+extern TTF_Font* font;
 
 void gameLoop(Player* p1, Player* p2, Ball* b1) {
     static int lastTime = 0;
@@ -22,10 +28,11 @@ void gameLoop(Player* p1, Player* p2, Ball* b1) {
         update(p1, p2, b1);
         render(p1, p2, b1);
     }
+    /* printf("Game Close\n"); */
 }
 
 void gameReset(Player* p1, Player* p2, Ball* ball) {
-    PlayerInitialize(p1, p2);
+    PlayerReset(p1, p2);
     BallInitialize(ball);
     SDL_Delay(1000);
 }
@@ -72,6 +79,8 @@ void render(Player* p1, Player* p2, Ball* b1) {
     SDL_RenderFillRect(rendr, &p1->rect);
     SDL_RenderFillRect(rendr, &p2->rect);
     SDL_RenderFillRect(rendr, &b1->rect);
+    /* ScoreTestRender(); */
+    ScoreRender(p2->score, p1->score);
     SDL_RenderPresent(rendr);
 }
 

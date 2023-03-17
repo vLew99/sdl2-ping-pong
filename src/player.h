@@ -12,6 +12,7 @@ typedef struct {
 } Player;
 
 void PlayerInitialize(Player* p1, Player* p2);
+void PlayerReset(Player* p1, Player* p2);
 bool paddleCollisionTop(Player* paddle);
 bool paddleCollisionBottom(Player* paddle);
 void paddleMoveUp(Player* paddle);

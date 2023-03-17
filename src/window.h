@@ -5,7 +5,8 @@
 
 #include "define.h"
 
-void WindowInit();
-void WindowDestroy();
+void InitializeWindow();
+void SaveWindowDimensions();
+void DestroyWindow();
 
 #endif
